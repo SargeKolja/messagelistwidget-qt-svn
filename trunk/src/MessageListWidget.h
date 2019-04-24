@@ -4,7 +4,7 @@
 /**
  * Project "MessageListWidget for Qt"
  *
- * MessageListWidget.cpp
+ * MessageListWidget.h
  * 
  * Just want to see your debugs/logs in a QtWidget, like QListView? 
  * Want to start with Qt, and like to work together, bring your ideas and code?
