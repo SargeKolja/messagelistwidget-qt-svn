@@ -50,10 +50,17 @@ public:
 //signals:
 
 public slots:
+  // usage slots
   void on_logline( const FileLineFunc_t& CodeLocation, const QDateTime& Time, int Level, uint64_t LogId, const QString& line );
   void on_logline( const QDateTime& Time, int Level, uint64_t LogId, const QString& line );
   void on_logline( const QDateTime& Time, int Level, const QString& line );
   void on_logline( int Level, const QString& line );
+  // control slots
+  void on_setMaxLevel( int NewMaxLevel );
+  void on_setWithDate( bool WithDate );
+  void on_setWithLevel( bool WithLevel );
+  void on_setWithNumID(bool WithID );
+  void on_setNumIDFormat(int digits, int base);
 
 private:
   QListWidget* mpListing;
@@ -61,6 +68,8 @@ private:
   bool         mWithDate;
   bool         mWithLevel;
   bool         mWithID;
+  int          mWithID_digits;
+  int          mWithID_base;
 };
 
 #endif // MESSAGELISTWIDGET_H

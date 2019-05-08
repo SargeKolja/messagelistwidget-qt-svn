@@ -52,6 +52,8 @@ MessageListWidget::MessageListWidget(QWidget *parent, const QString& objectName,
   , mWithDate(true)
   , mWithLevel(true)
   , mWithID(false)
+  , mWithID_digits(8)
+  , mWithID_base(10)
 {
   setObjectName( objectName );
   setToolTip( objectName );  // helpful for debugging, may be removed later
@@ -122,6 +124,39 @@ void MessageListWidget::on_logline(int Level, const QString& line)
 }
 
 
+void MessageListWidget::on_setMaxLevel(int NewMaxLevel)
+{
+    mMaxLevel = NewMaxLevel;
+}
+
+
+void MessageListWidget::on_setWithDate( bool WithDate )
+{
+    mWithDate = WithDate;
+}
+
+
+void MessageListWidget::on_setWithLevel( bool WithLevel )
+{
+    mWithLevel = WithLevel;
+}
+
+
+void MessageListWidget::on_setWithNumID( bool WithID )
+{
+    mWithID = WithID;
+}
+
+
+void MessageListWidget::on_setNumIDFormat(int digits, int base )
+{
+    mWithID_digits = digits;
+    mWithID_base = base;
+}
+
+
+
+
 QString MessageListWidget::getLevelName( int Level ) const
 {
     QString LevelName;
@@ -141,16 +176,26 @@ QString MessageListWidget::getLevelName( int Level ) const
     return LevelName;
 }
 
+
 QString MessageListWidget::getDateTimeStr(const QDateTime& Time) const
 {
   QString TimestampAsString( QString("%1").arg( Time.toString(QObject::tr("yyyy-MM-dd HH:mm:ss,zzz","local date time format for logging"))) );
   return TimestampAsString;
 }
 
+
 QString MessageListWidget::getLogIdStr(uint64_t LogId) const
 {
-  if( LogId >= 10000000lu && LogId <= 99999999lu ) // typical 8-digit-fixed size logid
-    return QString("%1").arg( LogId, 8, 10, QLatin1Char('0') );
-  else
-    return QString("0x%1:%2").arg( LogId>>32, 8, 16, QLatin1Char('0') ).arg( LogId&0xFFFFFFFF, 8, 16, QLatin1Char('0') );
+  if( mWithID_digits <= 8 && mWithID_base != 16) // typical 8-digit-fixed size logid
+  {   return QString("%1").arg( LogId, mWithID_digits, mWithID_base, QLatin1Char('0') );
+  }
+  else if( mWithID_digits <= 8 && mWithID_base == 16 )// large numbers as hex
+  {   return QString("0x%1").arg( LogId, mWithID_digits, mWithID_base, QLatin1Char('0') );
+  }
+  else if( mWithID_base != 16 )// large numbers
+  {   return QString("%1:%2").arg( LogId>>32, mWithID_digits-8, mWithID_base, QLatin1Char('0') ).arg( LogId&0xFFFFFFFF, 8, mWithID_base, QLatin1Char('0') );
+  }
+  else // large numbers as hex with colon in the middle
+  {   return QString("0x%1:%2").arg( LogId>>32, mWithID_digits-8, 16, QLatin1Char('0') ).arg( LogId&0xFFFFFFFF, 8, 16, QLatin1Char('0') );
+  }
 }
