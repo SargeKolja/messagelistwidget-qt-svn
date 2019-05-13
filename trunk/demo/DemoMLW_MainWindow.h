@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLayout>
 #include <QPushButton>
+#include <QSlider>
 
 #include <MessageListWidget.h>
 #include <rDebugCodeloc.h>
@@ -23,13 +24,15 @@ signals:
     void sig_logline( int Level, const QString& line );
     ////
     void sig_setMaxLevel(int MaxLevel);
+    void sig_setInitLevel(int MaxLevel); // to set the same level to slider and widget
     void sig_setWithDate(bool);
     void sig_setWithLevel(bool);
     void sig_setWithNumID(bool);
     void sig_setNumIDFormat(int digits,int base);
 
 public slots:
-    void on_increment_level(bool clicked);
+    //void on_increment_level(bool clicked);
+    void on_set_level(int requestedMaxLevel);
     void on_cklicked(bool clicked);
     void on_shortID(bool);
     void on_HexID(bool);
@@ -38,7 +41,8 @@ private: // data
   QWidget           m_CentralWidget;
   QBoxLayout*       m_LayOut;
   QPushButton*      m_ButtonLine;
-  QPushButton*      m_ButtonIncLevel;
+  //QPushButton*      m_ButtonIncLevel;
+  QSlider*          m_AdjustMaxLevel;
   QPushButton*      m_ButtonWithDate;
   QPushButton*      m_ButtonWithLevel;
   QPushButton*      m_ButtonWithId;
